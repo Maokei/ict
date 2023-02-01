@@ -1,0 +1,6 @@
+rootProject.name = 'ict'
+include 'client'
+include 'server'
+include 'share'
+include 'documentation'
+
