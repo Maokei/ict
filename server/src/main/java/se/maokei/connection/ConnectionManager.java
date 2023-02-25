@@ -1,5 +1,7 @@
 package se.maokei.connection;
 
+import se.maokei.core.IClientDispatcher;
+
 import javax.inject.Inject;
 import java.io.IOException;
 import java.net.Socket;
@@ -11,9 +13,12 @@ public class ConnectionManager implements IConnectionManager {
   private final List<Client> clients = new ArrayList<>();
   private final ExecutorService pool;
   final int maxClients;
+  private final IClientDispatcher clientDispatcher;
 
   @Inject
-  public ConnectionManager(ExecutorService pool, int maxClients) {
+  public ConnectionManager(IClientDispatcher clientDispatcher, ExecutorService pool,
+                           int maxClients) {
+    this.clientDispatcher = clientDispatcher;
     this.pool = pool;
     this.maxClients = maxClients;
   }
@@ -23,10 +28,15 @@ public class ConnectionManager implements IConnectionManager {
       clients.add(client);
       client.setConnectionClosedListener(() -> {
         clients.remove(client);
+        if (clientDispatcher.hasClientInQueue()) {
+          this.insertClientToListOrQueue(clientDispatcher.getClientFromQueue());
+        }
       });
       pool.submit(client);
     } else {
-      // TODO add the client to the waiting queue
+      if (!clientDispatcher.addClientToQueue(client)) {
+        client.close();
+      }
     }
   }
 
@@ -37,11 +47,12 @@ public class ConnectionManager implements IConnectionManager {
 
   @Override
   public void onServerStart() {
-    //TODO
+    clientDispatcher.start();
   }
 
   @Override
   public void onServerStop() {
+    clientDispatcher.shutdown();
     for (IClient client : clients) {
       client.close();
     }

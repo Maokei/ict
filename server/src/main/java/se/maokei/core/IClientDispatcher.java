@@ -1,4 +1,9 @@
 package se.maokei.core;
 
-public interface IClientDispatcher {
+import se.maokei.connection.Client;
+
+public interface IClientDispatcher extends IThreadControl {
+  boolean hasClientInQueue();
+  Client getClientFromQueue();
+  boolean addClientToQueue(Client client);
 }

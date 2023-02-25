@@ -68,5 +68,9 @@ public class Client implements IClient, Runnable {
   void setConnectionClosedListener(ConnectionClosedListener connectionClosedListener) {
     this.connectionClosedListener = connectionClosedListener;
   }
+
+  public ObjectOutputStream getWriter() {
+    return writer;
+  }
 }
 
