@@ -1,5 +1,8 @@
 package se.maokei.connection;
 
+import se.maokei.chat.IMessage;
+import se.maokei.writer.IWriterThread;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,18 +13,20 @@ import java.net.SocketException;
 public class Client implements IClient, Runnable {
   private final Socket socket;
   private final ObjectOutputStream writer;
+  private final IWriterThread writerThread;
   private ConnectionClosedListener connectionClosedListener;
 
-  public Client(Socket socket) throws IOException {
+  Client(Socket socket, IWriterThread writerThread) throws IOException {
     this.socket = socket;
     writer = new ObjectOutputStream(socket.getOutputStream());
+    this.writerThread = writerThread;
   }
 
   @Override
   public void run() {
     try (ObjectInputStream reader = new ObjectInputStream(socket.getInputStream())) {
-      Object received;
-      while ((received = reader.readObject()) != null) {
+      IMessage received;
+      while ((received = (IMessage) reader.readObject()) != null) {
         // TODO process the received message
       }
     } catch (EOFException | SocketException e) {
@@ -42,12 +47,12 @@ public class Client implements IClient, Runnable {
   }
 
   @Override
-  public void sendMessageAsync(Object message) {
+  public void sendMessageAsync(IMessage message) {
     //TODO
   }
 
   @Override
-  public void sendMessage(Object message) throws IOException {
+  public void sendMessage(IMessage message) throws IOException {
     writer.writeObject(message);
   }
 

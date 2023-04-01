@@ -1,5 +1,6 @@
 package se.maokei.core;
 
+import se.maokei.chat.TextMessage;
 import se.maokei.connection.Client;
 
 import java.io.IOException;
@@ -59,8 +60,8 @@ public class ClientDispatcher extends Thread implements IClientDispatcher {
           important to wait for the semaphore in a loop.*/
           /*
           If the thread wakes up at a semaphore and the queue is empty, or the
-          interupt flag is false, the thread will be put to
-          sleep again. It's important to have the interupt variable.
+          interrupt flag is false, the thread will be put to
+          sleep again. It's important to have the interrupt variable.
           Otherwise, we wouldn't be able to terminate the thread while shutting down the
           server.
           */
@@ -74,9 +75,11 @@ public class ClientDispatcher extends Thread implements IClientDispatcher {
         final int count = waitingQueue.size();
         waitingQueue.forEach(client -> {
           try {
+            // TODO hmmm
             //client.writer.write(("count: " + count + "\n").getBytes());
             //client.writer.flush();
-            client.getWriter().write(("count: " + count + "\n").getBytes());
+            //client.getWriter().write(("count: " + count + "\n").getBytes());
+            client.sendMessage(new TextMessage("count: " + count));
             client.getWriter().flush();
           } catch (IOException e) {
             clientsToRemove.add(client);
@@ -100,7 +103,7 @@ public class ClientDispatcher extends Thread implements IClientDispatcher {
    * shutdown
    * <p>In this method we do three things:</p>
    * <ol>
-   *   <li>set the interupt variable to true</li>
+   *   <li>set the interrupt variable to true</li>
    *   <li>release the semaphore</li>
    *   <li>wait for the thread to terminate</li>
    * </ol>

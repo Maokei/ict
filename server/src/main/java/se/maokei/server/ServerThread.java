@@ -37,6 +37,7 @@ public class ServerThread extends Thread implements IServerThread {
   @Override
   public void run() {
     connectionManager.onServerStart();
+    System.out.println("ServerThread started listening to port: " + port);
     try (ServerSocket serverSocket = new ServerSocket(port)) {
       serverSocket.setSoTimeout(SOCKET_TIMEOUT);
       while (running) {
@@ -46,6 +47,7 @@ public class ServerThread extends Thread implements IServerThread {
         } catch (SocketTimeoutException ignored) {}
       }
     } catch (IOException e) {
+      System.out.println("Unable to start server on port: " + port);
       e.printStackTrace();
     }
     connectionManager.onServerStop();
