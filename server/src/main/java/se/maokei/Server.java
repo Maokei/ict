@@ -7,6 +7,7 @@ import se.maokei.server.IServerThread;
 import se.maokei.server.IServerThreadFactory;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Server {
@@ -29,7 +30,12 @@ public class Server {
     final IServerThread serverThread = serverThreadFactory.getServerThread(parameters);
     serverThread.start();
     while(true) {
-      final String input = scanner.nextLine();
+      String input = "";
+      try {
+        input = scanner.nextLine();
+      } catch(NoSuchElementException e) {
+
+      }
       if ("exit".equals(input)) {
         break;
       }

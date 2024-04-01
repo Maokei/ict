@@ -1,6 +1,8 @@
 package se.maokei.connection;
 
 import se.maokei.chat.IMessage;
+import se.maokei.core.IEventBus;
+import se.maokei.core.MessageReceivedEvent;
 import se.maokei.writer.IWriterThread;
 
 import java.io.EOFException;
@@ -16,18 +18,22 @@ public class Client implements IClient, Runnable {
   private final IWriterThread writerThread;
   private ConnectionClosedListener connectionClosedListener;
 
-  Client(Socket socket, IWriterThread writerThread) throws IOException {
+  private final IEventBus eventBus;
+
+  Client(Socket socket, IWriterThread writerThread, IEventBus eventBus) throws IOException {
     this.socket = socket;
     writer = new ObjectOutputStream(socket.getOutputStream());
     this.writerThread = writerThread;
+    this.eventBus = eventBus;
   }
+
 
   @Override
   public void run() {
     try (ObjectInputStream reader = new ObjectInputStream(socket.getInputStream())) {
       IMessage received;
       while ((received = (IMessage) reader.readObject()) != null) {
-        // TODO process the received message
+        eventBus.publishEvent(new MessageReceivedEvent(received, this));
       }
     } catch (EOFException | SocketException e) {
       e.printStackTrace();

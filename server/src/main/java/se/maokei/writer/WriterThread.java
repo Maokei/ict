@@ -1,6 +1,5 @@
 package se.maokei.writer;
 
-import com.google.inject.Inject;
 import se.maokei.chat.IMessage;
 
 import java.io.IOException;

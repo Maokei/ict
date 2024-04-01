@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CmdParserTest {
-  private static final String[] PARAMETERS = {
+  public static final String[] PARAMETERS = {
       "-port=6298", "-clients=5", "-max_waiting_queue=5", "name=test"
   };
 

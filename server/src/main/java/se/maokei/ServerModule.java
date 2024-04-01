@@ -7,6 +7,8 @@ import se.maokei.connection.ClientDispatcherFactory;
 import se.maokei.connection.ConnectionManagerFactory;
 import se.maokei.connection.IClientDispatcherFactory;
 import se.maokei.connection.IConnectionManagerFactory;
+import se.maokei.core.EventBus;
+import se.maokei.core.IEventBus;
 import se.maokei.server.IServerThreadFactory;
 import se.maokei.server.ServerThreadFactory;
 import se.maokei.writer.IWriterThread;
@@ -21,5 +23,6 @@ public class ServerModule extends AbstractModule {
     bind(IConnectionManagerFactory.class).to(ConnectionManagerFactory.class);
     bind(IClientDispatcherFactory.class).to(ClientDispatcherFactory.class);
     bind(IWriterThread.class).to(WriterThread.class);
+    bind(IEventBus.class).to(EventBus.class);
   }
 }

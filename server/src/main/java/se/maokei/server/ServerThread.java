@@ -18,6 +18,7 @@ public class ServerThread extends Thread implements IServerThread {
     super("ServerThread");
     this.connectionManager = connectionManager;
     this.port = port;
+    //TODO running never set to true client unable to connect
   }
 
   @Override
@@ -37,12 +38,15 @@ public class ServerThread extends Thread implements IServerThread {
   @Override
   public void run() {
     connectionManager.onServerStart();
+    this.running = true;
     System.out.println("ServerThread started listening to port: " + port);
+    System.out.println("ServerThread state: " + running);
     try (ServerSocket serverSocket = new ServerSocket(port)) {
       serverSocket.setSoTimeout(SOCKET_TIMEOUT);
       while (running) {
         try {
           final Socket socket = serverSocket.accept();
+          System.out.println("sever soccket accept");
           connectionManager.addClient(socket);
         } catch (SocketTimeoutException ignored) {}
       }
