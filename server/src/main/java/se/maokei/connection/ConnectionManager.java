@@ -1,9 +1,6 @@
 package se.maokei.connection;
 
-import se.maokei.core.ClientConnectedEvent;
-import se.maokei.core.ClientDisconnectedEvent;
-import se.maokei.core.EventBus;
-import se.maokei.core.IClientDispatcher;
+import se.maokei.core.*;
 import se.maokei.writer.IWriterThread;
 
 import javax.inject.Inject;
@@ -17,7 +14,7 @@ public class ConnectionManager implements IConnectionManager {
   //private static Logger logger = LogManager.getLogger(ConnectionManager.class);
 
   private final List<Client> clients = new ArrayList<>();
-  private final EventBus eventBus;
+  private final IEventBus eventBus;
   private final ExecutorService pool;
   final int maxClients;
   private final IClientDispatcher clientDispatcher;
@@ -25,7 +22,7 @@ public class ConnectionManager implements IConnectionManager {
 
   @Inject
   public ConnectionManager(IClientDispatcher clientDispatcher, IWriterThread writerThread,
-                           EventBus eventBus, ExecutorService pool, int maxClients) {
+                           IEventBus eventBus, ExecutorService pool, int maxClients) {
     this.clientDispatcher = clientDispatcher;
     this.writerThread = writerThread;
     this.eventBus = eventBus;
